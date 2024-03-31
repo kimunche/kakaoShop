@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +41,25 @@ public class UserRestController {
     public ResponseEntity<?> login(@RequestBody UserRequest request){
          String jwt =userService.login(request);
          return ResponseEntity.ok().header(JwtTokenProvider.HEADER, jwt).body(ApiUtils.success(null));
+     }
+
+
+     // (카카오 로그인)
+     @GetMapping("/test/oauth/kakao")
+     public String index(Model model) {// , @AuthenticationPrincipal PrincipalUser principalUser) {
+
+         String view = "index";
+
+         /*if (principalUser != null) {
+
+             String userName = principalUser.providerUser().getUsername();
+
+             model.addAttribute("user", userName);
+             model.addAttribute("provider", principalUser.providerUser().getProvider());
+             if(!principalUser.providerUser().isCertificated()) view = "selfcert";
+         }*/
+
+         return view;
      }
 
 
