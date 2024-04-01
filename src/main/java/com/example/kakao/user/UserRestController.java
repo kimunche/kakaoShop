@@ -9,8 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +54,25 @@ public class UserRestController {
 
         return ResponseEntity.ok("kakao login success");
     }
+
+
+     // (카카오 로그인)
+     @GetMapping("/test/oauth/kakao")
+     public String index(Model model) {// , @AuthenticationPrincipal PrincipalUser principalUser) {
+
+         String view = "index";
+
+         /*if (principalUser != null) {
+
+             String userName = principalUser.providerUser().getUsername();
+
+             model.addAttribute("user", userName);
+             model.addAttribute("provider", principalUser.providerUser().getProvider());
+             if(!principalUser.providerUser().isCertificated()) view = "selfcert";
+         }*/
+
+         return view;
+     }
 
 
     // 사용 안함 - 프론트 요구사항에 이메일 중복 검사 로직 없음.
