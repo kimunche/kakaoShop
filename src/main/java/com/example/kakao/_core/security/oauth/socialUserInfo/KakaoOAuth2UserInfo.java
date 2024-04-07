@@ -1,8 +1,10 @@
-package com.example.kakao._core.security.oauth;
+package com.example.kakao._core.security.oauth.socialUserInfo;
+
+import com.example.kakao._core.security.oauth.OAuth2UserInfo;
 
 import java.util.Map;
 
-public class KakaoOAuth2UserInfo extends OAuth2UserInfo{
+public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
     public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
         super(attributes);
@@ -27,5 +29,22 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo{
         }
 
         return (String) profile.get("nickname");
+    }
+
+    @Override
+    public String getImageUrl() {
+        Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
+
+        if (account == null) {
+            return null;
+        }
+
+        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+
+        if (profile == null) {
+            return null;
+        }
+
+        return (String) profile.get("thumbnail_image_url");
     }
 }

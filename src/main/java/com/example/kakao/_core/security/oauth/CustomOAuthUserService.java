@@ -25,6 +25,7 @@ public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserReque
     private final UserJPARepository userJPARepository;
 
     private static final String KAKAO = "kakao";
+    private static final String NAVER = "naver";
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
@@ -58,7 +59,7 @@ public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserReque
         if(KAKAO.equals(registrationId)){
             return KAKAO;
         }
-        return "";
+        return NAVER;
     }
 
     private User getUser(OAuthAttributes attributes) {
