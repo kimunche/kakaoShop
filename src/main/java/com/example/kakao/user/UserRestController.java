@@ -1,7 +1,8 @@
 package com.example.kakao.user;
 
+import com.example.kakao._core.security.CustomUserDetails;
 import com.example.kakao._core.security.JwtTokenProvider;
-import com.example.kakao._core.security.oauth.CustomOAuthUserService;
+import com.example.kakao._core.security.oauth.*;
 import com.example.kakao._core.utils.ApiUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,14 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -48,30 +53,34 @@ public class UserRestController {
          return ResponseEntity.ok().header(JwtTokenProvider.HEADER, jwt).body(ApiUtils.success(null));
      }
 
-    //kakao login callback
-    @GetMapping("/login/kakao")
-    public ResponseEntity<?> kakaologin(){
 
-        return ResponseEntity.ok("kakao login success");
+    @GetMapping("/login")
+    public ModelAndView login(){
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("login");
+
+        return mav;
     }
 
 
      // (카카오 로그인)
      @GetMapping("/test/oauth/kakao")
-     public String index(Model model) {// , @AuthenticationPrincipal PrincipalUser principalUser) {
+     public ModelAndView index(Authentication authentication, @AuthenticationPrincipal CustomOAuthUser principalUser) {// , @AuthenticationPrincipal PrincipalUser principalUser) {
 
-         String view = "index";
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("index");
 
-         /*if (principalUser != null) {
+         if (principalUser != null) {
 
-             String userName = principalUser.providerUser().getUsername();
+             String userName = principalUser.getNickName();
+             String provider = principalUser.getProvider();
+             mav.addObject("user", userName);
+             mav.addObject("provider", provider );
 
-             model.addAttribute("user", userName);
-             model.addAttribute("provider", principalUser.providerUser().getProvider());
-             if(!principalUser.providerUser().isCertificated()) view = "selfcert";
-         }*/
+         }
 
-         return view;
+         return mav;
      }
 
 

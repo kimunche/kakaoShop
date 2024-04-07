@@ -1,10 +1,12 @@
 package com.example.kakao._core.security.oauth;
 
+import com.example.kakao._core.security.CustomUserDetails;
 import com.example.kakao._core.security.JwtTokenProvider;
 import com.example.kakao.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -26,10 +28,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         CustomOAuthUser oAuth2User = (CustomOAuthUser) authentication.getPrincipal();
 
-
         List<String> roles = new ArrayList<>();
         roles.add("ROLE_USER");
-
 
         User user = User.builder()
                 .email(oAuth2User.getEmail())
@@ -39,7 +39,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String token = JwtTokenProvider.create(user);
         response.addHeader(JwtTokenProvider.HEADER, token);
-        response.sendRedirect("/login/kakao");
+        request.getRequestDispatcher("/test/oauth/kakao").forward(request, response);
 
         //refreshtoken??
 

@@ -7,6 +7,7 @@ import com.example.kakao.user.UserJPARepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -31,12 +32,14 @@ public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserReque
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest); //userRequest를 통해서 OAuth서비스에서 가져온 유저정보를 담고 있는 oAuth2User를 가져온다.
 
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        String socialType = getSocialType(registrationId);
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
 
         Map<String, Object> attributes = oAuth2User.getAttributes();// 소셜 로그인에서 API가 제공하는 userInfo의 Json 값(유저 정보들)
 
-        OAuthAttributes extractAttributes = OAuthAttributes.ofKakao(userNameAttributeName, attributes);
+        OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
 
         User createdUser = getUser(extractAttributes);
 
@@ -45,8 +48,17 @@ public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserReque
                 attributes,
                 extractAttributes.getNameAttributeKey(),
                 createdUser.getEmail(),
-                createdUser.getRoles().get(0)
+                createdUser.getRoles().get(0),
+                createdUser.getUsername(),
+                socialType
         );
+    }
+
+    private String getSocialType(String registrationId) {
+        if(KAKAO.equals(registrationId)){
+            return KAKAO;
+        }
+        return "";
     }
 
     private User getUser(OAuthAttributes attributes) {
