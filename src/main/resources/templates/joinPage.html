@@ -1,0 +1,31 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="static/css/owl.carousel.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+
+    <!-- Style -->
+    <link rel="stylesheet" href="static/css/style.css">
+
+    <title>Login</title>
+</head>
+<body>
+<h1>회원가입 페이지</h1>
+<hr/>
+<form action="/test/oauth/update" method="post" th:object="${UserRequest}">
+    <input type="text" name="username" th:value="*{username}"/> <br/>
+    <input type="password" name="password" placeholder="Password" th:value="*{password}"/> <br/>
+    <input type="email" name="email" th:value="*{email}"/> <br/>
+    <button type="submit" class="keycloak btn btn-block">회원가입</button>
+</form>
+</body>
+</html>
