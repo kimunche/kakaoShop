@@ -46,9 +46,9 @@ public class OAuthAttributes {
 
     public User toEntity(OAuth2UserInfo oAuth2UserInfo){
         return User.builder()
-                .email(oAuth2UserInfo.getId() + "@kakaotest.com")
+                .email(oAuth2UserInfo.getEmail() == null ? oAuth2UserInfo.getId() + "@test.com" : oAuth2UserInfo.getEmail())
                 .username(oAuth2UserInfo.getNickname())
-                .roles(new StringArrayConverter().convertToEntityAttribute("ROLE_USER"))
+                .roles(new StringArrayConverter().convertToEntityAttribute("ROLE_GUEST"))
                 .build();
     }
 

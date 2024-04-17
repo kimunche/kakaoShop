@@ -24,6 +24,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -40,10 +41,10 @@ public class UserRestController {
     @Operation(summary = "회원가입 API", description = "비회원 유저의 회원가입 API이며, email 중복을 체크합니다.")
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody UserRequest request){
-         User user = userService.join(request);
-         ApiUtils.ApiResult<?> apiResult = ApiUtils.success(user);
-         return ResponseEntity.ok(apiResult);
-     }
+        User user = userService.join(request);
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.success(user);
+        return ResponseEntity.ok(apiResult);
+    }
 
     // (기능2) 로그인
     @Operation(summary = "로그인 API", description = "기존 유저의 로그인 API이며 jwt token을 생성합니다.")
@@ -64,9 +65,9 @@ public class UserRestController {
     }
 
 
-     // (카카오 로그인)
-     @GetMapping("/test/oauth/kakao")
-     public ModelAndView index(Authentication authentication, @AuthenticationPrincipal CustomOAuthUser principalUser) {// , @AuthenticationPrincipal PrincipalUser principalUser) {
+     // (social 로그인)
+     @GetMapping("/test/oauth/login")
+     public ModelAndView index(@AuthenticationPrincipal CustomOAuthUser principalUser) {// , @AuthenticationPrincipal PrincipalUser principalUser) {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("index");
@@ -83,8 +84,39 @@ public class UserRestController {
          return mav;
      }
 
+     // 회원가입
+     @GetMapping("/test/oauth/join")
+     public ModelAndView join(Authentication authentication, @AuthenticationPrincipal CustomOAuthUser principalUser) {
+         ModelAndView mav = new ModelAndView();
+         mav.setViewName("joinPage");
 
-    // 사용 안함 - 프론트 요구사항에 이메일 중복 검사 로직 없음.
+         if (principalUser != null) {
+             String userName = principalUser.getNickName();
+//             mav.addObject("username", userName);
+             String email = principalUser.getEmail();
+//             mav.addObject("email", email);
+
+             mav.addObject("UserRequest", new UserRequest(userName, "", email));
+         }
+
+         return mav;
+     }
+
+
+    @Operation(summary = "oauth 회원가입 추가정보 update API", description = "oauth 회원의 회원가입 후 추가정보 update")
+    @PostMapping("/test/oauth/update")
+    public ModelAndView update(@ModelAttribute("UserRequest") UserRequest request, @AuthenticationPrincipal CustomOAuthUser principalUser){
+        User user = userService.update(request);
+        ApiUtils.ApiResult<?> apiResult = ApiUtils.success(user);
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("login");
+
+        return mav;
+//        return ResponseEntity.ok(apiResult);
+    }
+
+
+         // 사용 안함 - 프론트 요구사항에 이메일 중복 검사 로직 없음.
     // @PostMapping("/check")
 
     // (기능3) - 로그아웃

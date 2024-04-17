@@ -55,4 +55,26 @@ public class UserService {
 
         return token;
     }
+
+    @Transactional
+    public User update(UserRequest request) {
+        try {
+
+            User user = userJPARepository.findByEmail(request.getEmail())
+                    .orElseThrow(()-> new Exception500("cannot find user : "+ request.getEmail()));
+
+            String password = passwordEncoder.encode(request.getPassword());
+
+            List<String> roles = new ArrayList<>();
+            roles.add("ROLE_USER");
+
+            user.updateInfo(password, request.getUsername(), roles);
+
+            userJPARepository.save(user);
+        } catch (Exception e) {
+            throw new Exception500("failed to update");
+        }
+        return userJPARepository.findByUsername(request.getUsername())
+                .orElseThrow(()-> new Exception500("cannot find user : "+ request.getUsername()));
+    }
 }

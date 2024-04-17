@@ -34,4 +34,10 @@ public class User{
         this.username = username;
         this.roles = roles;
     }
+
+    public void updateInfo(String password, String username, List<String> roles){
+        this.password = password;
+        this.username = username;
+        this.roles = roles;
+    }
 }
