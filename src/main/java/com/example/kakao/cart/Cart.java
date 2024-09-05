@@ -18,16 +18,7 @@ import javax.persistence.*;
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_cart_option_user", columnNames = {"user_id", "option_id"})
         })
-/**
- *
- * 폎일 : 개발자가 되기 위한
- * 선생님 찾기,
- * 언제 까지 취업 : boot 캠프 끝나고 한 두달
- *
- * 개발자 : 도움 받는 지인
- * -> 현재 없음
- * ->
- */
+
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
